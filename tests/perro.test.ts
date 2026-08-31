@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { Perroderecha } from "../src/Perroder";
-import { Perroizquierda } from "../src/Perroizq";
+import { PerroDerecha } from "../src/Perroder";
+import { PerroIzquierda } from "../src/Perroizq";
 
-describe("Perroderecha", () => {
+describe("PerroDerecha", () => {
   it("debe tener 4 celdas en su orientación inicial", () => {
-    const pieza = new Perroderecha();
+    const pieza = new PerroDerecha();
     const celdas = pieza.getCells();
 
     expect(celdas).toHaveLength(4);
@@ -18,7 +18,7 @@ describe("Perroderecha", () => {
     );
   });
   it ("debe rotar a la derecha correctamente", () => {
-    const pieza = new Perroderecha();
+    const pieza = new PerroDerecha();
     pieza.rotateRight();
     const celdas = pieza.getCells();
 
@@ -35,9 +35,9 @@ describe("Perroderecha", () => {
 
 });
 
-describe("Perroizquierda", () => {
+describe("PerroIzquierda", () => {
   it("debe tener 4 celdas en su orientación inicial", () => {
-    const pieza = new Perroizquierda();
+    const pieza = new PerroIzquierda();
     const celdas = pieza.getCells();
 
     expect(celdas).toHaveLength(4);
@@ -51,7 +51,7 @@ describe("Perroizquierda", () => {
     );
   });
   it ("debe rotar a la izquierda correctamente", () => {
-    const pieza = new Perroizquierda();
+    const pieza = new PerroIzquierda();
     pieza.rotateLeft();
     const celdas = pieza.getCells();  
     
