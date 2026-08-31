@@ -23,3 +23,21 @@ describe("Tablero", () => {
     expect(tablero.getCell(1, 1)).not.toBeNull();
   });
 });
+   it("no debe poder agregar una pieza que se sale de los límites del tablero", () => {
+  const tablero = new Tablero();
+  const pieza = new Cuadrado();
+
+  const agregada = tablero.addPiece(pieza, 9);
+
+  expect(agregada).toBe(false);
+  expect(tablero.getCell(0, 9)).toBe(null);
+});
+    it("debe recordar cual es la pieza actual despues de agregarla al tablero", () => {
+    const tablero = new Tablero();
+    const pieza = new Cuadrado();
+
+    tablero.addPiece(pieza, 0);
+
+    expect(tablero.getCell(0, 0)).not.toBeNull();
+  
+  });
