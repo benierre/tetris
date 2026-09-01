@@ -1,6 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Tablero } from "../src/Tablero";
 import { Cuadrado } from "../src/Cuadrado";
+import { Palo } from "../src/Palo";
+import { PiezaT } from "../src/PiezaT";
 
 describe("Tablero", () => {
   it("debe tener el formato de 10 columnas y 20 filas", () => {
@@ -67,17 +69,157 @@ describe("Tablero", () => {
     }
   });
 
-  it("debe eliminar una línea completa y bajar las de arriba", () => {
+  it("debe eliminar dos lineas completas cuando las piezas se bloquean", () => {
     const tablero = new Tablero();
 
-    tablero.addPiece(new Cuadrado(), 0);
-    tablero.addPiece(new Cuadrado(), 2);
-    tablero.addPiece(new Cuadrado(), 4);
-    tablero.addPiece(new Cuadrado(), 6);
-    tablero.addPiece(new Cuadrado(), 8);
+    for (let columna = 0; columna < 10; columna += 2) {
+        const pieza = new Cuadrado();
 
-    const eliminadas = tablero.limpiarLineasCompletas();
+        tablero.addPiece(
+            pieza,
+            columna
+        );
 
-    expect(eliminadas).toBe(2);
-  });
+        let seMovio = true;
+
+        while (seMovio) {
+            seMovio =
+                tablero.Moverabajo();
+        }
+    }
+
+    expect(
+        tablero.getCell(18, 0)
+    ).toBeNull();
+
+    expect(
+        tablero.getCell(19, 0)
+    ).toBeNull();
+ });
+ 
+ it("no debe permitir agregar otra pieza mientras existe una pieza actual", () => {
+    const tablero = new Tablero();
+
+    const primeraPieza = new Cuadrado();
+    const segundaPieza = new Cuadrado();
+
+    const primeraAgregada =
+        tablero.addPiece(
+            primeraPieza,
+            0
+        );
+
+    const segundaAgregada =
+        tablero.addPiece(
+            segundaPieza,
+            3
+        );
+
+    expect(primeraAgregada).toBe(true);
+
+    expect(segundaAgregada).toBe(false);
+
+    expect(
+        tablero.getCurrentPiece()
+    ).toBe(primeraPieza);
+ });
+ it("debe activar game over si una nueva pieza no puede aparecer", () => {
+    const tablero = new Tablero();
+
+    for (let i = 0; i < 10; i++) {
+        const pieza = new Cuadrado();
+
+        const agregada =
+            tablero.addPiece(
+                pieza,
+                0
+            );
+
+        expect(agregada).toBe(true);
+
+        let seMovio = true;
+
+        while (seMovio) {
+            seMovio =
+                tablero.Moverabajo();
+        }
+    }
+
+    const nuevaPieza =
+        new Cuadrado();
+
+    const agregada =
+        tablero.addPiece(
+            nuevaPieza,
+            0
+        );
+
+    expect(agregada).toBe(false);
+
+    expect(
+        tablero.isGameOver()
+    ).toBe(true);
+ });
+ it("debe rotar una pieza hacia la derecha si hay espacio suficiente", () => {
+    const tablero = new Tablero();
+
+    const pieza =
+        new PiezaT();
+
+    tablero.addPiece(
+        pieza,
+        3
+    );
+
+    const rotada =
+        tablero.rotarDerecha();
+
+    expect(rotada).toBe(true);
+ });
+ it("no debe rotar una pieza si la rotacion sale de los limites del tablero", () => {
+    const tablero = new Tablero();
+
+    const pieza =
+        new PiezaT();
+
+    tablero.addPiece(
+        pieza,
+        8
+    );
+
+    const rotada =
+        tablero.rotarDerecha();
+
+    expect(rotada).toBe(false);
+ });
+ it("debe rotar aleatoriamente una pieza antes de agregarla", () => {
+    const randomSpy =
+        vi.spyOn(
+            Math,
+            "random"
+        );
+
+    randomSpy
+        .mockReturnValueOnce(0.9)
+        .mockReturnValueOnce(0);
+
+    const tablero =
+        new Tablero();
+
+    const pieza =
+        new Palo();
+
+    const agregada =
+        tablero.agregarPiezaAleatoria(
+            pieza
+        );
+
+    expect(agregada).toBe(true);
+
+    expect(
+        pieza.getOrientationIndex()
+    ).toBe(1);
+
+    randomSpy.mockRestore();
+ });
 });

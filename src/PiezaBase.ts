@@ -9,7 +9,6 @@ export abstract class PiezaBase implements IRotator {
     private orientationIndex: number;
     private readonly orientations: Cell[][];
     public readonly name: string;
-    
 
     protected constructor(name: string, orientations: Cell[][]) {
         this.name = name;
@@ -26,15 +25,33 @@ export abstract class PiezaBase implements IRotator {
 
     public rotateLeft(): void {
         this.orientationIndex =
-            (this.orientationIndex + this.orientations.length - 1) % this.orientations.length;
+            (this.orientationIndex + this.orientations.length - 1) %
+            this.orientations.length;
     }
 
     public rotateRight(): void {
-        this.orientationIndex = (this.orientationIndex + 1) % this.orientations.length;
+        this.orientationIndex =
+            (this.orientationIndex + 1) %
+            this.orientations.length;
     }
 
     public getAncho(): number {
-     const columnas = this.getCells().map(c => c.column);
-     return Math.max(...columnas) - Math.min(...columnas) + 1;
+        const columnas = this.getCells().map(c => c.column);
+
+        return Math.max(...columnas) - Math.min(...columnas) + 1;
+    }
+
+    public getCantidadOrientaciones(): number {
+        return this.orientations.length;
+    }
+
+    public getOrientationIndex(): number {
+        return this.orientationIndex;
+    }
+
+    public setOrientationIndex(index: number): void {
+        this.orientationIndex =
+            ((index % this.orientations.length) + this.orientations.length) %
+            this.orientations.length;
     }
 }
