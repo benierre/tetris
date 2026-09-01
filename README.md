@@ -11,7 +11,7 @@ Orientada a Objetos y Desarrollo Guiado por Pruebas (TDD).
 - Benicio Gerardo Escobar — DNI 47895896
 - Santiago Bernabeú — DNI 45020807 
 
-## Lenguajes utilizadas
+## Lenguajes utilizados
 
 - TypeScript
 - Vitest (utilizado para el testing y cobertura)
