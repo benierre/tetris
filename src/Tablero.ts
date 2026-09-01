@@ -81,7 +81,7 @@ export class Tablero {
     return piezaActual !== null && this.intentarBajar(piezaActual);
 }
 
-    private intentarBajar(piezaActual: PiezaBase): boolean {
+ private intentarBajar(piezaActual: PiezaBase): boolean {
     const celdasViejas = piezaActual.getCells().map(c => ({
         row: c.row + this.filaactual,
         column: c.column + this.columnaactual,
@@ -110,7 +110,7 @@ export class Tablero {
 
     return cabe;
 }
-    }
+    
 
     private confirmarMovimiento(
         nuevaRow: number,
@@ -139,70 +139,18 @@ export class Tablero {
         this.limpiarLineasCompletas();
     }
 
-    rotarDerecha(): boolean {
-        if (!this.piezaactual) {
-            return false;
-        }
-
+      rotarDerecha(): boolean {
         const piezaActual = this.piezaactual;
-
-        const orientacionAnterior =
-            piezaActual.getOrientationIndex();
-
-        const celdasViejas = piezaActual.getCells().map(c => ({
-            row: c.row + this.filaactual,
-            column: c.column + this.columnaactual,
-        }));
-
-        celdasViejas.forEach(c => {
-            this.grid[c.row]![c.column] = null;
-        });
-
-        piezaActual.rotateRight();
-
-        const celdasNuevas = piezaActual.getCells().map(c => ({
-            row: c.row + this.filaactual,
-            column: c.column + this.columnaactual,
-        }));
-
-        const rotacionValida = celdasNuevas.every(c =>
-            c.row >= 0 &&
-            c.row < Tablero.HEIGHT &&
-            c.column >= 0 &&
-            c.column < Tablero.WIDTH &&
-            this.grid[c.row]![c.column] === null
-        );
-
-        if (rotacionValida) {
-            celdasNuevas.forEach(c => {
-                this.grid[c.row]![c.column] =
-                    piezaActual.name;
-            });
-
-            return true;
-        }
-
-        piezaActual.setOrientationIndex(
-            orientacionAnterior
-        );
-
-        this.restaurarCeldas(
-            celdasViejas,
-            piezaActual.name
-        );
-
-        return false;
+        return piezaActual !== null && this.rotar(piezaActual, () => piezaActual.rotateRight());
     }
 
     rotarIzquierda(): boolean {
-        if (!this.piezaactual) {
-            return false;
-        }
-
         const piezaActual = this.piezaactual;
+        return piezaActual !== null && this.rotar(piezaActual, () => piezaActual.rotateLeft());
+    }
 
-        const orientacionAnterior =
-            piezaActual.getOrientationIndex();
+    private rotar(piezaActual: PiezaBase, aplicarRotacion: () => void): boolean {
+        const orientacionAnterior = piezaActual.getOrientationIndex();
 
         const celdasViejas = piezaActual.getCells().map(c => ({
             row: c.row + this.filaactual,
@@ -213,7 +161,7 @@ export class Tablero {
             this.grid[c.row]![c.column] = null;
         });
 
-        piezaActual.rotateLeft();
+        aplicarRotacion();
 
         const celdasNuevas = piezaActual.getCells().map(c => ({
             row: c.row + this.filaactual,
@@ -221,33 +169,21 @@ export class Tablero {
         }));
 
         const rotacionValida = celdasNuevas.every(c =>
-            c.row >= 0 &&
-            c.row < Tablero.HEIGHT &&
-            c.column >= 0 &&
-            c.column < Tablero.WIDTH &&
+            c.row >= 0 && c.row < Tablero.HEIGHT &&
+            c.column >= 0 && c.column < Tablero.WIDTH &&
             this.grid[c.row]![c.column] === null
         );
 
-        if (rotacionValida) {
-            celdasNuevas.forEach(c => {
-                this.grid[c.row]![c.column] =
-                    piezaActual.name;
-            });
+        rotacionValida && celdasNuevas.forEach(c => {
+            this.grid[c.row]![c.column] = piezaActual.name;
+        });
 
-            return true;
-        }
+        !rotacionValida && piezaActual.setOrientationIndex(orientacionAnterior);
+        !rotacionValida && this.restaurarCeldas(celdasViejas, piezaActual.name);
 
-        piezaActual.setOrientationIndex(
-            orientacionAnterior
-        );
-
-        this.restaurarCeldas(
-            celdasViejas,
-            piezaActual.name
-        );
-
-        return false;
+        return rotacionValida;
     }
+    
 
     agregarPiezaAleatoria(pieza: PiezaBase): boolean {
         const cantidadRotaciones =
