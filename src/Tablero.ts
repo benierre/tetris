@@ -42,40 +42,25 @@ export class Tablero {
     }
 
     addPiece(pieza: PiezaBase, columna: number): boolean {
-        if (this.gameOver) {
-            return false;
-        }
+    const puedeIntentar = !this.gameOver && this.piezaactual === null;
 
-        if (this.piezaactual !== null) {
-            return false;
-        }
+    const celdasAbsolutas: Cell[] = pieza.getCells().map(c => ({
+        row: c.row,
+        column: c.column + columna,
+    }));
 
-        const celdasAbsolutas: Cell[] = pieza.getCells().map(c => ({
-            row: c.row,
-            column: c.column + columna,
-        }));
+    const cabe = puedeIntentar && celdasAbsolutas.every(c =>
+        c.row >= 0 && c.row < Tablero.HEIGHT &&
+        c.column >= 0 && c.column < Tablero.WIDTH &&
+        this.grid[c.row]![c.column] === null
+    );
 
-        const cabe = celdasAbsolutas.every(c =>
-            c.row >= 0 &&
-            c.row < Tablero.HEIGHT &&
-            c.column >= 0 &&
-            c.column < Tablero.WIDTH &&
-            this.grid[c.row]![c.column] === null
-        );
+    (puedeIntentar && !cabe) && (this.gameOver = true);
+    cabe && this.fijarComoActual(pieza, columna, celdasAbsolutas);
 
-        if (!cabe) {
-            this.gameOver = true;
-            return false;
-        }
-
-        this.fijarComoActual(
-            pieza,
-            columna,
-            celdasAbsolutas
-        );
-
-        return true;
-    }
+    return cabe;
+}
+    
 
     private fijarComoActual(
         pieza: PiezaBase,
