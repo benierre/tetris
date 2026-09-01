@@ -77,54 +77,39 @@ export class Tablero {
     }
 
     Moverabajo(): boolean {
-        if (!this.piezaactual) {
-            return false;
-        }
+    const piezaActual = this.piezaactual;
+    return piezaActual !== null && this.intentarBajar(piezaActual);
+}
 
-        const piezaActual = this.piezaactual;
+    private intentarBajar(piezaActual: PiezaBase): boolean {
+    const celdasViejas = piezaActual.getCells().map(c => ({
+        row: c.row + this.filaactual,
+        column: c.column + this.columnaactual,
+    }));
 
-        const celdasViejas = piezaActual.getCells().map(c => ({
-            row: c.row + this.filaactual,
-            column: c.column + this.columnaactual,
-        }));
+    celdasViejas.forEach(c => {
+        this.grid[c.row]![c.column] = null;
+    });
 
-        celdasViejas.forEach(c => {
-            this.grid[c.row]![c.column] = null;
-        });
+    const nuevaRow = this.filaactual + 1;
 
-        const nuevaRow = this.filaactual + 1;
+    const celdasNuevas = piezaActual.getCells().map(c => ({
+        row: c.row + nuevaRow,
+        column: c.column + this.columnaactual,
+    }));
 
-        const celdasNuevas = piezaActual.getCells().map(c => ({
-            row: c.row + nuevaRow,
-            column: c.column + this.columnaactual,
-        }));
+    const cabe = celdasNuevas.every(c =>
+        c.row >= 0 && c.row < Tablero.HEIGHT &&
+        c.column >= 0 && c.column < Tablero.WIDTH &&
+        this.grid[c.row]![c.column] === null
+    );
 
-        const cabe = celdasNuevas.every(c =>
-            c.row >= 0 &&
-            c.row < Tablero.HEIGHT &&
-            c.column >= 0 &&
-            c.column < Tablero.WIDTH &&
-            this.grid[c.row]![c.column] === null
-        );
+    cabe && this.confirmarMovimiento(nuevaRow, celdasNuevas, piezaActual.name);
+    !cabe && this.restaurarCeldas(celdasViejas, piezaActual.name);
+    !cabe && this.bloquearPieza();
 
-        if (cabe) {
-            this.confirmarMovimiento(
-                nuevaRow,
-                celdasNuevas,
-                piezaActual.name
-            );
-
-            return true;
-        }
-
-        this.restaurarCeldas(
-            celdasViejas,
-            piezaActual.name
-        );
-
-        this.bloquearPieza();
-
-        return false;
+    return cabe;
+}
     }
 
     private confirmarMovimiento(
