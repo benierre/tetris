@@ -16,4 +16,8 @@ describe("Cuadrado", () => {
       ])
     );
   });
+  it("debe calcular su ancho correctamente", () => {
+    const pieza = new Cuadrado();
+    expect(pieza.getAncho()).toBe(2);
 });
+  });

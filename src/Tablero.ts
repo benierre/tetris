@@ -67,7 +67,6 @@ export class Tablero {
 
         const piezaActual = this.piezaactual;
 
-        // Paso 2: borrar celdas viejas
         const celdasViejas = piezaActual.getCells().map(c => ({
             row: c.row + this.filaactual,
             column: c.column + this.columnaactual,
@@ -76,21 +75,18 @@ export class Tablero {
             this.grid[c.row]![c.column] = null;
         });
 
-        // Paso 3: calcular celdas nuevas (una fila más abajo)
         const nuevaRow = this.filaactual + 1;
         const celdasNuevas = piezaActual.getCells().map(c => ({
             row: c.row + nuevaRow,
             column: c.column + this.columnaactual,
         }));
 
-        // Paso 4: verificar si caben
         const cabe = celdasNuevas.every(c =>
             c.row >= 0 && c.row < Tablero.HEIGHT &&
             c.column >= 0 && c.column < Tablero.WIDTH &&
             this.grid[c.row]![c.column] === null
         );
 
-        // Paso 5: si cabe, actualizar y pintar; si no, restaurar las viejas
         cabe && this.confirmarMovimiento(nuevaRow, celdasNuevas, piezaActual.name);
         !cabe && this.restaurarCeldas(celdasViejas, piezaActual.name);
 
@@ -108,5 +104,28 @@ export class Tablero {
         celdas.forEach(c => {
             this.grid[c.row]![c.column] = nombre;
         });
+    }
+
+    agregarPiezaAleatoria(pieza: PiezaBase): boolean {
+        const maxColumna = Tablero.WIDTH - pieza.getAncho();
+        const columna = Math.floor(Math.random() * (maxColumna + 1));
+        return this.addPiece(pieza, columna);
+    }
+
+    private filaCompleta(fila: number): boolean {
+        return this.grid[fila]!.every(celda => celda !== null);
+    }
+
+    limpiarLineasCompletas(): number {
+        const filasRestantes = this.grid.filter((_, fila) => !this.filaCompleta(fila));
+        const cantidadEliminadas = Tablero.HEIGHT - filasRestantes.length;
+
+        const filasNuevasVacias = Array.from({ length: cantidadEliminadas }, () =>
+            Array(Tablero.WIDTH).fill(null)
+        );
+
+        this.grid = [...filasNuevasVacias, ...filasRestantes];
+
+        return cantidadEliminadas;
     }
 }
