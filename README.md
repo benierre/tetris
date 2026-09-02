@@ -1,27 +1,49 @@
-# Tetris — Paradigmas y Lenguajes de Programación II
+Tetris
+Proyecto desarrollado en TypeScript aplicando conceptos de Programación Orientada a Objetos (POO) y Desarrollo Guiado por Pruebas (TDD).
 
-Trabajo práctico integrador (AE1) para la materia Paradigmas y Lenguajes de
-Programación II, Universidad de la Cuenca del Plata. Implementación del
-código base de un juego de Tetris en TypeScript, aplicando Programación
-Orientada a Objetos y Desarrollo Guiado por Pruebas (TDD).
+Integrantes
+Benicio Escobar
+Diego Escobar
+Santiago Bernabeú
 
-## Integrantes
 
-- Diego Gerónimo Escobar — DNI 47895896
-- Benicio Gerardo Escobar — DNI 47895896
-- Santiago Bernabeú — DNI 45020807 
+Instalación
+Para descargar el proyecto, cloná el repositorio:
 
-## Lenguajes utilizados
-
-- TypeScript
-- Vitest (utilizado para el testing y cobertura)
-- Node.js / npm
-
-## Instalación
-
-Cloná el repositorio e instalá las dependencias:
-
-```bash
 git clone https://github.com/benierre/tetris.git
+
+
+Ingresá a la carpeta del proyecto:
+
 cd tetris
+
+
+Instalá las dependencias:
+
 npm install
+
+
+Ejecución de los tests
+Para ejecutar todas las pruebas unitarias:
+
+npm test
+
+
+También se puede ejecutar directamente Vitest:
+
+npx vitest run
+
+
+Cobertura de código
+Para ejecutar las pruebas y generar el reporte de cobertura:
+
+npx vitest run --coverage
+
+
+El proyecto utiliza las pruebas unitarias para verificar el correcto funcionamiento de las principales funcionalidades implementadas.
+
+
+Repositorio
+Repositorio del proyecto:
+
+https://github.com/benierre/tetris
